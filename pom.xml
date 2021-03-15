@@ -11,6 +11,7 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
@@ -89,38 +90,46 @@
             <artifactId>poi-ooxml</artifactId>
             <version>3.17</version>
         </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>6.14.3</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
     <build>
         <plugins>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-surefire-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <properties>-->
+<!--                        <property>-->
+<!--                            <name>usedefaultlisteners</name>-->
+<!--                            <value>false</value>-->
+<!--                        </property>-->
+<!--                        <property>-->
+<!--                            <name>listener</name>-->
+<!--                            <value>org.uncommons.reportng.HTMLReporter,-->
+<!--                                org.uncommons.reportng.JUnitXMLReporter</value>-->
+<!--                        </property>-->
+<!--                    </properties>-->
+<!--                    <workingDirectory>target/</workingDirectory>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M3</version>
                 <configuration>
+                    <useSystemClassLoader>false</useSystemClassLoader>
                     <forkCount>0</forkCount>
                     <testFailureIgnore>true</testFailureIgnore>
                     <suiteXmlFiles>
                         <suiteXmlFiles>testng.xml</suiteXmlFiles>
                     </suiteXmlFiles>
                     <groups>testcase</groups>
-                    <properties>-->
-                    <property>
-                        <name>usedefaultlisteners</name>
-                        <value>false</value>
-                    </property>
+                    <properties>
                     <property>
                         <name>listener</name>
                         <value>org.uncommons.reportng.HTMLReporter,
                             org.uncommons.reportng.JUnitXMLReporter</value>
                     </property>
                     </properties>
-                    <workingDirectory>target/</workingDirectory>
                 </configuration>
             </plugin>
         </plugins>
