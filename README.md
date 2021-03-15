@@ -61,25 +61,23 @@ The workflow of this testing class is worked as following:
 
 **There are several special cases:** 
 
-1. **If one single parameter without name is required by the API:** such as in the DCHR project, while /recognition/like require only one single id as the body of the request body, (single) would be marked as one single parameter and leave the key name as blank.** 
+1. **If one single parameter without name is required by the API:**  (single) would be marked as one single parameter and leave the key name as blank.** 
 
 ![Image description](https://github.com/Ethan-zc/Automatic-API-Testing-Tool/blob/main/image_storage/Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.005.png?raw=True)
 
 ![Image description](https://github.com/Ethan-zc/Automatic-API-Testing-Tool/blob/main/image_storage/Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.006.png?raw=True)
 
-1. **If one parameter in the request body is a list of JSON pattern data:** As in DCHR project /recognition/create API, parameter entry is a JSON list. ![](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.007.png)
-
-To handle this situation, use [] to mark it as a list and use “, ”(dot and one single space) to mark the separation of different JSON data. Please make sure that parameters in one single JSON is separated by only “,”(dot). 
+1. **If one parameter in the request body is a list of JSON pattern data:** use [] to mark it as a list and use “, ”(dot and one single space) to mark the separation of different JSON data. Please make sure that parameters in one single JSON is separated by only “,”(dot). 
 
 ![Image description](https://github.com/Ethan-zc/Automatic-API-Testing-Tool/blob/main/image_storage/Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.008.png?raw=True)
 
-1. **If the checkpoint is a parameter of response body’s JSON data:** Take project DCHR as an example, here I want to check if the total list number is equal to what I know, the total number is in body/total as following: ![Image description](https://github.com/Ethan-zc/Automatic-API-Testing-Tool/blob/main/image_storage/Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.009.png?raw=True)
+1. **If the checkpoint is a parameter of response body’s JSON data:** here I want to check if the total list number is equal to what I know, the total number is in body/total as following: ![Image description](https://github.com/Ethan-zc/Automatic-API-Testing-Tool/blob/main/image_storage/Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.009.png?raw=True)
 
 Therefore, I fill in the checkpoint as: /body/total:
 
 ![Image description](https://github.com/Ethan-zc/Automatic-API-Testing-Tool/blob/main/image_storage/Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.010.png?raw=True)
 
-1. **If there are multiple checkpoints in one single testing case:** Also take DCHR as an example, when I want to check multiple different checkpoint in one testing case, the checkpoints and corresponding acceptance criteria could be marked as following: ![Image description](https://github.com/Ethan-zc/Automatic-API-Testing-Tool/blob/main/image_storage/Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.011.png?raw=True)
+1. **If there are multiple checkpoints in one single testing case:**when I want to check multiple different checkpoint in one testing case, the checkpoints and corresponding acceptance criteria could be marked as following: ![Image description](https://github.com/Ethan-zc/Automatic-API-Testing-Tool/blob/main/image_storage/Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.011.png?raw=True)
 
 Here I check if the body/fromUserName is equal to tao, and body/backgroundColor is equal to tao and yellow. Only when all checkpoints meet acceptance criteria, the testing case would be marked as passed. 
 
