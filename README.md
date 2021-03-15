@@ -1,0 +1,2 @@
+# Automatic-API-Testing-Tool
+API testing is an important part of project development, it helps to find bugs as early as possible to improve the quality of ongoing project. However, most API testing tool is not open-source and free.  Here I proposed and established an automatic API Testing Tool. This testing tool read input testing cases from excel file, send http request and check if the response from testing API meets the acceptance criteria automatically.
