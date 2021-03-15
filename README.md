@@ -7,7 +7,7 @@ API testing is an important part of project development, it helps to find bugs a
 
 Here I proposed and established an automatic API Testing Tool. This testing tool read input testing cases from excel file, send http request and check if the response from testing API meets the acceptance criteria automatically. The workflow of the testing tool could be described as follow: 
 
-![](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.001.png)
+![Image description](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.001.png)
 
 The testing tool would firstly read testing cases from excel file. For each testing case, if the run switch is off, then the testing case would not be run. If the run switch is on, parameters of http request would be read and packaged, then the http request would be send to the testing API. After receiving response, it would check if the response information meets the acceptance criteria. If yes, which means the testing case has passed, the run switch of the testing case would be turned off. If no, then the testing case would be moved to the top of excel file. Finally, all testing result would be write into a HTML report. 
 
@@ -25,14 +25,14 @@ Before using the automatic testing tool, please make sure following environment 
 
 Please use IntelliJ IDEA to create a new project from existing source. Click File > New > Project from Existing Sources…, and select the folder where source code is stored. Please import it as a MAVEN project. 
 
-![](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.002.png)The structure of the project is as follow: 
+![Image description](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.002.png)The structure of the project is as follow: 
 
 1. **automatic.testing.tool.utils.ExcelProcess**:  This class is used to process data in excel file, it takes String Excel filePath and Integer sheetId as input, returns a 2-dimension object, which saves excel data in corresponding cell index. At the same time, it helps to read parameters of each testing case from excel file, rearrange the order of testing case based on result, and turn off passing testing cases. 
 1. **automatic.testing.tool.utils.JSONParser**: JSONParser is used to parse responding information. It helps to get corresponding information from API response. 
 1. **automatic.testing.tool.utils.RestfulClient**: RestfulClient is a packaged http client, which could pack and send POST, GET, PUT, DELETE requests. It helps to get response body in JSON format and do acceptance checking. 
 1. **automatic.testing.tool.utils.TestAPIReader**: The class is used to read config.properties, which contains the host name of API and the path of excel file. It is also the parent class of ExcelReadTest.
 1. **automatic.testing.tool.utils.ExcelReadTest**: This is the core class of doing automatic testing work. Detailed information of each test case would be read and do the testing. Data Driven pattern is used here to do efficient testing. 
-1. ![](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.003.png) Meanwhile, the resources of testing class need to be prepared as following: 
+1. ![Image description](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.003.png) Meanwhile, the resources of testing class need to be prepared as following: 
 
 The path of testResources is:
 
@@ -48,7 +48,7 @@ The workflow of this testing class is worked as following:
 
 1. **Enter the testing case in APITestCase.xls, please remember to save the change before the next step.**
 
-![](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.004.png)
+![Image description](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.004.png)
 
 1. **Test No.**: Order number of testing case. 
 1. **Test Name:** The description of testing case, this part would be printed in the report. 
@@ -63,29 +63,29 @@ The workflow of this testing class is worked as following:
 
 1. **If one single parameter without name is required by the API:** such as in the DCHR project, while /recognition/like require only one single id as the body of the request body, (single) would be marked as one single parameter and leave the key name as blank.** 
 
-![](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.005.png)
+![Image description](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.005.png)
 
-![](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.006.png)
+![Image description](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.006.png)
 
 1. **If one parameter in the request body is a list of JSON pattern data:** As in DCHR project /recognition/create API, parameter entry is a JSON list. ![](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.007.png)
 
 To handle this situation, use [] to mark it as a list and use “, ”(dot and one single space) to mark the separation of different JSON data. Please make sure that parameters in one single JSON is separated by only “,”(dot). 
 
-![](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.008.png)
+![Image description](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.008.png)
 
-1. **If the checkpoint is a parameter of response body’s JSON data:** Take project DCHR as an example, here I want to check if the total list number is equal to what I know, the total number is in body/total as following: ![](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.009.png)
+1. **If the checkpoint is a parameter of response body’s JSON data:** Take project DCHR as an example, here I want to check if the total list number is equal to what I know, the total number is in body/total as following: ![Image description](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.009.png)
 
 Therefore, I fill in the checkpoint as: /body/total:
 
-![](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.010.png)
+![Image description](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.010.png)
 
-1. **If there are multiple checkpoints in one single testing case:** Also take DCHR as an example, when I want to check multiple different checkpoint in one testing case, the checkpoints and corresponding acceptance criteria could be marked as following: ![](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.011.png)
+1. **If there are multiple checkpoints in one single testing case:** Also take DCHR as an example, when I want to check multiple different checkpoint in one testing case, the checkpoints and corresponding acceptance criteria could be marked as following: ![Image description](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.011.png)
 
 Here I check if the body/fromUserName is equal to tao, and body/backgroundColor is equal to tao and yellow. Only when all checkpoints meet acceptance criteria, the testing case would be marked as passed. 
 
 1. **Check in config.properties if the host and testData is matched as required.** 
 
-![](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.012.png)
+![Image description](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.012.png)
 
 Please make sure that the API is running and the testData path is the place where the APITEstCase.xls is stored. 
 
@@ -93,25 +93,25 @@ Please make sure that the API is running and the testData path is the place wher
 
 Please edit the configuration of AutomaticTesting and set the path to the testng.xml as stored in the folder: 
 
-![](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.013.png)
+![Image description](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.013.png)
 
-![](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.014.png)
+![Image description](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.014.png)
 
 1. **Run the config AutomaticTesting.** 
 
-![](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.015.png)
+![Image description](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.015.png)
 
 As we could see here, for failing testing cases, it would be marked as yellow cross, while passing testing case would be marked as green tick. At the same time, after run the testing, failed testing cases would be moved to the top of the excel file and keep turning on. 
 
-![](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.016.png)
+![Image description](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.016.png)
 ##
 Finally, the report would be generated and put in folder test-output. In html folder, overview.html would have an overview of the testing result: 
 
-![](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.017.png)
+![Image description](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.017.png)
 
 Click on the test suit, more detailed information would be demonstrated: 
 
-![](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.018.png)
+![Image description](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.018.png)
 
 For failed testing cases, their detailed input read from testing case and response information would be demonstrated at the same time. 
 
