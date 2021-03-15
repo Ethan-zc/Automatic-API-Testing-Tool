@@ -7,7 +7,7 @@ API testing is an important part of project development, it helps to find bugs a
 
 Here I proposed and established an automatic API Testing Tool. This testing tool read input testing cases from excel file, send http request and check if the response from testing API meets the acceptance criteria automatically. The workflow of the testing tool could be described as follow: 
 
-![Image description](Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.001.png)
+![Image description](https://github.com/Ethan-zc/Automatic-API-Testing-Tool/blob/main/image_storage/Aspose.Words.878f2690-eae9-464c-b246-3fd6d085cbb8.001.png?raw=True)
 
 The testing tool would firstly read testing cases from excel file. For each testing case, if the run switch is off, then the testing case would not be run. If the run switch is on, parameters of http request would be read and packaged, then the http request would be send to the testing API. After receiving response, it would check if the response information meets the acceptance criteria. If yes, which means the testing case has passed, the run switch of the testing case would be turned off. If no, then the testing case would be moved to the top of excel file. Finally, all testing result would be write into a HTML report. 
 
