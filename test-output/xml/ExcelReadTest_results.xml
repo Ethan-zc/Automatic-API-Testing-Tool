@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="C:/Users/YZI2SGH/Desktop/DCHR/AutomaticTestingTool"
+           tests="5"
+           failures="0"
+           errors="0"
+           skipped="3"
+           time="0.390">
+  <properties />
+  
+            <testcase name="putRequestTest" time="0.0" classname="ExcelReadTest">
+          <skipped />
+    </testcase>
+            <testcase name="getRequestTest" time="0.0" classname="ExcelReadTest">
+          <skipped />
+    </testcase>
+            <testcase name="deleteRequestTest" time="0.0" classname="ExcelReadTest">
+          <skipped />
+    </testcase>
+  
+            <testcase name="postRequestTest" time="0.309" classname="ExcelReadTest" />
+                <testcase name="postRequestTest" time="0.081" classname="ExcelReadTest" />
+      
+</testsuite>
