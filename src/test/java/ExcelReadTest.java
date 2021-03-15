@@ -1,17 +1,18 @@
 import automatic.testing.tool.utils.ExcelProcess;
 import automatic.testing.tool.utils.RestfulClient;
-import automatic.testing.tool.utils.TestAPIReader;
 import com.alibaba.fastjson.JSONObject;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.*;
 
-public class ExcelReadTest extends TestAPIReader {
+public class ExcelReadTest {
 
     // client to handle http request and response
     private RestfulClient client;
@@ -27,9 +28,24 @@ public class ExcelReadTest extends TestAPIReader {
     private Map<String, List<Integer>> testcaseIndexMap;
     // List that stores the index of failed testing cases.
     private List<Integer> failedCaseIndex;
+    private Properties props;
+    private String excelPath;
+    private String host;
 
-    @BeforeClass
+    @BeforeClass (alwaysRun = true)
     public void setup() throws IOException {
+
+        try {
+            props = new Properties();
+            FileInputStream file = new FileInputStream(System.getProperty("user.dir") +
+                    "\\src\\test\\resources\\config.properties");
+            props.load(file);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        host = props.getProperty("Host");
+        excelPath = props.getProperty("testData");
         // Read excel file and initialize essential parameters.
         excelData = ExcelProcess.processExcel(excelPath, 0);
 
@@ -62,7 +78,6 @@ public class ExcelReadTest extends TestAPIReader {
             }
         }
     }
-
 
     // Get the loginInfo based on the Excel and provided to loginTest case.
     @DataProvider( name = "postRequestInfoProvider" )
@@ -178,7 +193,7 @@ public class ExcelReadTest extends TestAPIReader {
         failedCaseIndex.removeIf(index -> Integer.parseInt(rowNum) == index);
     }
 
-    @AfterClass
+    @AfterClass (alwaysRun = true)
     public void excelRearrange() throws IOException {
         System.out.println("This is failed testing case index: " + failedCaseIndex);
         ExcelProcess.rearrangeCertainRows(failedCaseIndex);
