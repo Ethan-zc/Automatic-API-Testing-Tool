@@ -92,24 +92,6 @@
     </dependencies>
     <build>
         <plugins>
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-surefire-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <properties>-->
-<!--                        <property>-->
-<!--                            <name>usedefaultlisteners</name>-->
-<!--                            <value>false</value>-->
-<!--                        </property>-->
-<!--                        <property>-->
-<!--                            <name>listener</name>-->
-<!--                            <value>org.uncommons.reportng.HTMLReporter,-->
-<!--                                org.uncommons.reportng.JUnitXMLReporter</value>-->
-<!--                        </property>-->
-<!--                    </properties>-->
-<!--                    <workingDirectory>target/</workingDirectory>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
