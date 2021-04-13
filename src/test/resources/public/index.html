@@ -1,0 +1,137 @@
+<html>
+<head>
+    <title>文件上传表单</title>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script> 
+    <script src="js/jexcel.core.js" type="text/javascript"></script>
+    <script src="js/jsuites.js" type="text/javascript"></script>
+    <script type="text/javascript" src="js/xlsx.core.min.js"></script>
+    <link rel="stylesheet" href="/css/jsuites.css" type="text/css" />
+    <link rel="stylesheet" href="/css/jexcel.css" type="text/css" />
+</head>
+<body>
+    <div>
+        <script tyoe="text/javascript">
+            var mySpreadsheet;
+
+            function selectFile() {
+                document.getElementById('file').click();
+            }
+
+            // read local excel file
+            function readWorkbookFromLocalFile(file, callback) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var data = e.target.result;
+                    var workbook = XLSX.read(data, {type: 'binary'});
+                    if(callback) callback(workbook);
+                };
+                reader.readAsBinaryString(file);
+            }
+
+
+            // 读取 excel文件
+            function outputWorkbook(workbook) {
+                // the set for workbooks name
+                var sheetNames = workbook.SheetNames;
+                sheetNames.forEach(name => {
+                    // get the workbook through its name
+                    var worksheet = workbook.Sheets[name];
+                    for(var key in worksheet) {
+                        // v is the original value from the sheet cell
+                        console.log(key, key[0] === '!' ? worksheet[key] : worksheet[key].v);
+                    }
+                });
+            }
+
+            function readWorkbook(workbook) {
+                // the set for workbooks name
+                var sheetNames = workbook.SheetNames; 
+                // read only the first sheet
+                var worksheet = workbook.Sheets[sheetNames[0]];
+                var csv = XLSX.utils.sheet_to_csv(worksheet);
+                // transfer the table to json format. 
+                var json = XLSX.utils.sheet_to_json(worksheet);
+                var longest_idx = findLongestLength(json);
+                console.log("This is the longest: " + longest_idx);
+                var columnHead = [
+                    { type: 'text', title:'Test No.', width:100 },
+                    { type: 'text', title:'Test Name',width:350 },
+                    { type: 'checkbox', title:'Run Switch',width:100 },
+                    { type: 'text', title:'address',width:350 },
+                    { type: 'dropdown', title:'Request Type', width:100, source: ['post','put','delete','get'] },
+                    { type: 'text', title:'Check Point', width:200 },
+                    { type: 'text', title:'Acceptance Criteria', width:200 }
+                ]
+                var longest_row = json[longest_idx];
+                var count = 0;
+                for (var valueName in longest_row) {
+                    if (count >= 7) {
+                        columnHead.push({
+                            type: 'text', title: valueName, width: 150
+                        })
+                    }
+                    count += 1;
+                }
+                //document.getElementById('result').innerHTML = json2table(json);
+                //json2table(json);
+                console.log(json);
+                mySpreadsheet = jspreadsheet(document.getElementById('spreadsheet1'), {
+                    data: json,
+                    columns: columnHead,
+                })
+            }
+
+            function findLongestLength(json) {
+                var longest_idx = 0;
+                var longest = 0;
+                var temp = 0;
+                json.forEach(function(row,idx) {
+                    temp = 0;
+                    for (var valueName in row) {
+                        temp += 1;
+                    }
+                    if (temp > longest) {
+                        longest = temp;
+                        longest_idx = idx;
+                    }              
+                })
+                return longest_idx;
+            }
+
+            $(function() {
+                document.getElementById('file').addEventListener('change', function(e) {
+                    var files = e.target.files;
+                    if(files.length == 0) return;
+                    var f = files[0];
+                    readWorkbookFromLocalFile(f, function(workbook) {
+                        readWorkbook(workbook);
+                    });
+                });
+            });
+
+            function getJsonLength(json) {
+                var jsonLength = 0;
+                for (var i in json) {
+                    jsonLength++;
+                }
+                return jsonLength;
+            }
+
+        </script>
+    </div>
+
+    <br />
+
+    <input type="file" id="file" style="display:none;" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+    <button onclick="selectFile()">加载本地excel文件</button>
+    
+    <p>结果输出：</p>
+    <div id="spreadsheet1" name='newSheet'></div>
+    <input type="button" onclick="mySpreadsheet.download(includeHeaders=true)" value="保存"/>
+    <form method="get" action="/execute">
+        <input type='submit' value="Run Tests.">
+    </form>
+</body>
+</html>

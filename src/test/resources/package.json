@@ -1,0 +1,15 @@
+{
+    "name": "AutomaticTesting",
+    "version": "0.1.0",
+    "main": "server.js",
+    "scripts": {
+        "test": "node server.js"
+    },
+    "dependencies": {
+        "exceljs": "^4.2.1"
+    },
+    "author": "Zichen Yang",
+    "license": "ISC",
+    "keywords": [],
+    "description": ""
+}

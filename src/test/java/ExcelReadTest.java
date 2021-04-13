@@ -2,10 +2,7 @@ import automatic.testing.tool.utils.ExcelProcess;
 import automatic.testing.tool.utils.RestfulClient;
 import com.alibaba.fastjson.JSONObject;
 import org.testng.Reporter;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -32,7 +29,7 @@ public class ExcelReadTest {
     private String excelPath;
     private String host;
 
-    @BeforeClass (alwaysRun = true)
+    @BeforeSuite (alwaysRun = true)
     public void setup() throws IOException {
 
         try {
@@ -61,10 +58,11 @@ public class ExcelReadTest {
         for ( int i = 1; i < excelData.length; i++ ) {
             // Based on the type of http request, the sequence number of corresponding
             // testing cases would be hashed into List which indexed by http request types.
-            String httpRequest = excelData[i][4].toString();
             // Determine if the testing case should be run: 1 as yes, 0 as no.
             String runSwitch = excelData[i][2].toString();
-            if (runSwitch.equals("1")) {
+
+            if (runSwitch.equals("1") || runSwitch.equals("true")) {
+                String httpRequest = excelData[i][4].toString();
                 if ( !testcaseIndexMap.containsKey( httpRequest ) ) {
                     List<Integer> index = new ArrayList<>();
                     index.add(i);
@@ -193,10 +191,12 @@ public class ExcelReadTest {
         failedCaseIndex.removeIf(index -> Integer.parseInt(rowNum) == index);
     }
 
-    @AfterClass (alwaysRun = true)
+    @AfterTest(alwaysRun = true)
     public void excelRearrange() throws IOException {
         System.out.println("This is failed testing case index: " + failedCaseIndex);
-        ExcelProcess.rearrangeCertainRows(failedCaseIndex);
+        if ( failedCaseIndex.size() != 0) {
+            ExcelProcess.rearrangeCertainRows(failedCaseIndex);
+        }
         System.out.println("number of failed case is : " + failedCaseIndex.size());
         ExcelProcess.turnOffPassedCase(failedCaseIndex.size());
     }

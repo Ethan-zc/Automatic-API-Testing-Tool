@@ -1,9 +1,9 @@
 package automatic.testing.tool.utils;
 
 import com.alibaba.fastjson.JSONObject;
-import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.*;
 import org.testng.Reporter;
 
 import java.io.*;
@@ -14,7 +14,7 @@ import java.util.Properties;
 public class ExcelProcess {
 
     private static Properties props;
-    private static HSSFSheet excelSheet;
+    private static XSSFSheet excelSheet;
     private static Object[][] excelData;
     private static String excelPath;
 
@@ -33,7 +33,8 @@ public class ExcelProcess {
         // Read excel by data flow
         File file = new File(System.getProperty("user.dir")+filePath);
         FileInputStream fis = new FileInputStream(file);
-        HSSFWorkbook wb = new HSSFWorkbook(fis);
+        XSSFWorkbook wb = new XSSFWorkbook(fis);
+        DataFormatter df = new DataFormatter();
 
         // Read certain sheet and count number of rows and cells
         excelSheet = wb.getSheetAt(sheetId);
@@ -51,9 +52,9 @@ public class ExcelProcess {
                 if ((excelSheet.getRow(i).getCell(j) == null) || excelSheet.getRow(i).getCell(j).toString().equals("")) {
                     continue;
                 }
-                HSSFCell cell = excelSheet.getRow(i).getCell(j);
-                cell.setCellType(CellType.STRING);
-                dttData[i][j] = cell.getStringCellValue();
+                XSSFCell cell = excelSheet.getRow(i).getCell(j);
+                String cellInString = df.formatCellValue(cell);
+                dttData[i][j] = cellInString;
             }
         }
 
@@ -106,7 +107,6 @@ public class ExcelProcess {
                         JSONObject jsonData = JSONObject.parseObject(s);
                         finalInputValue.add(jsonData);
                     }
-                    System.out.println( "This is read final json: " + finalInputValue );
                     keys.put( excelData[row][cell].toString(), finalInputValue);
                 } else if (excelData[row][cell+1].toString().contains("{")){
                     JSONObject jsonData = JSONObject.parseObject(excelData[row][cell+1].toString() );
@@ -125,15 +125,15 @@ public class ExcelProcess {
             Reporter.log( "Input is: " + singleNum );
             return singleNum;
         } else {
-            Reporter.log( "Input is: " + keys.toString() );
+            Reporter.log( "Input is: " + keys);
             return keys.toString();
         }
     }
 
-    public static void copyRow(HSSFWorkbook workbook, HSSFSheet worksheet, int sourceRowNum, int destinationRowNum) {
+    public static void copyRow(XSSFWorkbook workbook, XSSFSheet worksheet, int sourceRowNum, int destinationRowNum) {
         // Get the source / new row
-        HSSFRow newRow = worksheet.getRow(destinationRowNum);
-        HSSFRow sourceRow = worksheet.getRow(sourceRowNum);
+        XSSFRow newRow = worksheet.getRow(destinationRowNum);
+        XSSFRow sourceRow = worksheet.getRow(sourceRowNum);
 
         // If the row exist in destination, push down all rows by 1 else create a new row
         if (newRow != null) {
@@ -145,8 +145,8 @@ public class ExcelProcess {
         // Loop through source columns to add to new row
         for (int i = 0; i < sourceRow.getLastCellNum(); i++) {
             // Grab a copy of the old/new cell
-            HSSFCell oldCell = sourceRow.getCell(i);
-            HSSFCell newCell = newRow.createCell(i);
+            XSSFCell oldCell = sourceRow.getCell(i);
+            XSSFCell newCell = newRow.createCell(i);
 
             // If the old cell is null jump to next cell
             if (oldCell == null) {
@@ -154,7 +154,7 @@ public class ExcelProcess {
             }
 
             // Copy style from old cell and apply to new cell
-            HSSFCellStyle newCellStyle = workbook.createCellStyle();
+            XSSFCellStyle newCellStyle = workbook.createCellStyle();
             newCellStyle.cloneStyleFrom(oldCell.getCellStyle());
             newCell.setCellStyle(newCellStyle);
 
@@ -173,22 +173,22 @@ public class ExcelProcess {
 
             // Set the cell data value
             switch (oldCell.getCellType()) {
-                case Cell.CELL_TYPE_BLANK:
+                case BLANK:
                     newCell.setCellValue(oldCell.getStringCellValue());
                     break;
-                case Cell.CELL_TYPE_BOOLEAN:
+                case BOOLEAN:
                     newCell.setCellValue(oldCell.getBooleanCellValue());
                     break;
-                case Cell.CELL_TYPE_ERROR:
+                case ERROR:
                     newCell.setCellErrorValue(oldCell.getErrorCellValue());
                     break;
-                case Cell.CELL_TYPE_FORMULA:
+                case FORMULA:
                     newCell.setCellFormula(oldCell.getCellFormula());
                     break;
-                case Cell.CELL_TYPE_NUMERIC:
+                case NUMERIC:
                     newCell.setCellValue(oldCell.getNumericCellValue());
                     break;
-                case Cell.CELL_TYPE_STRING:
+                case STRING:
                     newCell.setCellValue(oldCell.getRichStringCellValue());
                     break;
             }
@@ -212,15 +212,17 @@ public class ExcelProcess {
         if( sourceRowNum >= 0 && sourceRowNum < lastRowNum )
             worksheet.shiftRows( sourceRowNum+1, lastRowNum,-1 );
         if( sourceRowNum == lastRowNum ){
-            HSSFRow removingRow = worksheet.getRow( sourceRowNum );
+            XSSFRow removingRow = worksheet.getRow( sourceRowNum );
             worksheet.removeRow( removingRow );
         }
     }
 
 
     public static void rearrangeCertainRows(List<Integer> rowIndexList) throws IOException {
-        HSSFWorkbook workbook = new HSSFWorkbook(new FileInputStream(System.getProperty("user.dir")+excelPath));
-        HSSFSheet sheet = workbook.getSheet("Sheet1");
+        XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream(System.getProperty("user.dir")+excelPath));
+        XSSFSheet sheet = workbook.getSheet("Sheet1");
+        int numberOfRow = excelSheet.getPhysicalNumberOfRows();
+        System.out.println("The number of rows is equal to: " + numberOfRow);
         int ASC_order = 0;
         for (Integer index: rowIndexList) {
             copyRow(workbook, sheet, index+1, 1+ASC_order);
@@ -233,13 +235,17 @@ public class ExcelProcess {
     }
 
     public static void turnOffPassedCase(Integer numOfFailedCases) throws IOException {
-        HSSFWorkbook workbook = new HSSFWorkbook(new FileInputStream(
+        XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream(
                 System.getProperty("user.dir")+excelPath));
-        HSSFSheet sheet = workbook.getSheet("Sheet1");
+        XSSFSheet sheet = workbook.getSheet("Sheet1");
         int numberOfRow = excelSheet.getPhysicalNumberOfRows();
+        System.out.println("The number of rows is equal to: " + numberOfRow);
         for (int i = numOfFailedCases+1; i < numberOfRow; i++) {
-            HSSFCell cell = sheet.getRow(i).getCell(2);
+            XSSFCell cell = sheet.getRow(i).getCell(2);
             cell.setCellValue(0);
+        }
+        if (numOfFailedCases != 0) {
+            sheet.shiftRows(numberOfRow+1, numberOfRow + numOfFailedCases, -1);
         }
         FileOutputStream out = new FileOutputStream(
                 System.getProperty("user.dir")+excelPath);
